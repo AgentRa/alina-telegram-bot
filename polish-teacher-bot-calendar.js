@@ -423,7 +423,11 @@ function isValidEmail(email) {
 }
 
 function isValidPhone(phone) {
-    return /^[\+]?[1-9][\d]{8,14}$/.test(phone.replace(/[\s\-\(\)]/g, ''));
+    console.log(`DEBUG: Validating phone: ${phone}`);
+    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, '');
+    const isValid = /^[\+]?[1-9][\d]{8,14}$/.test(cleanedPhone);
+    console.log(`DEBUG: Cleaned phone: ${cleanedPhone}, Is valid: ${isValid}`);
+    return isValid;
 }
 
 // Инициализация
@@ -760,6 +764,7 @@ bot.on('message', async (msg) => {
             bot.sendMessage(chatId, '❌ Podaj prawidłowy adres email (np. nazwa@domena.pl)');
         }
     } else if (session.step === 'waiting_phone') {
+        console.log(`DEBUG: Received phone input: ${text}`);
         if (isValidPhone(text)) {
             session.phone = text;
             // Сохраняем данные в userProfiles для будущего использования
