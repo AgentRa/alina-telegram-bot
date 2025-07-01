@@ -1,10 +1,63 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { google } = require('googleapis');
 const moment = require('moment-timezone');
+const http = require('http'); // Using built-in http for the server
 require('dotenv').config();
 
 const token = process.env.BOT_TOKEN;
-const bot = new TelegramBot(token, {polling: true});
+const port = process.env.PORT || 3000;
+const url = process.env.RENDER_EXTERNAL_URL; // The public URL of the Render service
+
+let bot;
+
+if (!token) {
+    console.error('❌ BOT_TOKEN не найден! Пожалуйста, добавьте его в переменные окружения.');
+    process.exit(1);
+}
+
+// Если URL доступен (в продакшн на Render), используем вебхуки
+if (url) {
+    console.log('🚀 Запуск в режиме Webhook...');
+    bot = new TelegramBot(token);
+    bot.setWebHook(`${url}/bot${token}`);
+    console.log(`✅ Вебхук установлен на ${url}/bot${token}`);
+
+    // Создаем HTTP сервер для приема обновлений от Telegram
+    const server = http.createServer((req, res) => {
+        if (req.method === 'POST' && req.url === `/bot${token}`) {
+            let body = '';
+            req.on('data', (chunk) => {
+                body += chunk.toString();
+            });
+            req.on('end', () => {
+                try {
+                    const update = JSON.parse(body);
+                    bot.processUpdate(update);
+                    res.writeHead(200);
+                    res.end();
+                } catch (error) {
+                    console.error('❌ Ошибка обработки обновления:', error);
+                    res.writeHead(500);
+                    res.end();
+                }
+            });
+        } else {
+            // Health check endpoint
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end('Бот работает в режиме вебхука!');
+        }
+    });
+
+    server.listen(port, '0.0.0.0', () => {
+        console.log(`✅ Сервер для вебхуков запущен на порту ${port}`);
+    });
+
+} else {
+    // В локальной среде используем polling для удобства разработки
+    console.log('🔧 Запуск в режиме Polling для локальной разработки...');
+    bot = new TelegramBot(token, { polling: true });
+}
+
 
 // Настройки Google Calendar и рабочего времени учителя
 const GOOGLE_CREDENTIALS = process.env.GOOGLE_CREDENTIALS;
