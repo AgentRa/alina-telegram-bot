@@ -1,94 +1,185 @@
-# Telegram Бот "Расписание занятий"
+# 🇵🇱 Telegram Bot dla Nauczyciela Polskiego
 
-Простой бот для ведения расписания занятий в Telegram.
+Profesjonalny bot Telegram dla umówienia lekcji polskiego języka online z certyfikowaną nauczycielką.
 
-## Возможности
+## ✨ Funkcje
 
-- ✅ Добавление занятий
-- 📚 Просмотр всего расписания  
-- 🗑 Удаление занятий
-- 📅 Просмотр занятий на сегодня
-- 💬 Интуитивный интерфейс
+### 📚 **Typy lekcji:**
+- 🟢 **Początkujący (A1-A2)** - 60 zł/60 min
+- 🟡 **Średniozaawansowany (B1-B2)** - 70 zł/60 min  
+- 🔴 **Zaawansowany (C1-C2)** - 80 zł/60 min
+- 💬 **Konwersacje** - 65 zł/60 min
+- 💼 **Polski biznesowy** - 85 zł/60 min
+- 📝 **Przygotowanie do egzaminów** - 90 zł/90 min
 
-## Установка и запуск
+### 🎯 **Główne możliwości:**
+- ✅ Łatwa rezerwacja online
+- 📅 Inteligentny system terminów
+- 📧 Automatyczne potwierdzenia
+- 📱 Friendly interface z inline keyboards
+- 🔄 Zarządzanie rezerwacjami
+- 📞 Kontakt z nauczycielem
 
-### 1. Клонируйте проект
+## 🚀 Instalacja i uruchomienie
+
+### 1. Sklonuj projekt
 ```bash
-git clone <ваш-репозиторий>
-cd alina_bot
+git clone <repository>
+cd polish-teacher-bot
 ```
 
-### 2. Установите зависимости
+### 2. Zainstaluj zależności
 ```bash
 npm install
 ```
 
-### 3. Настройте токен
-- Скопируйте ваш токен бота из BotFather
-- Откройте файл `.env`
-- Замените токен на ваш
+### 3. Skonfiguruj token
+Skopiuj token bota z BotFather do pliku `.env`:
+```
+BOT_TOKEN=twój_token_bota
+```
 
-### 4. Запустите бота
+### 4. Uruchom bota
 ```bash
-# Обычный запуск
+# Produkcja
 npm start
 
-# Запуск с автоперезагрузкой (для разработки)
+# Rozwój (z auto-restart)
 npm run dev
+
+# Stary bot (schedule bot)
+npm run old-bot
 ```
 
-## Команды бота
+## 📱 Jak używać bota
 
-- `/start` - Приветствие и список команд
-- `/add <название>` - Добавить новое занятие
-- `/list` - Показать все занятия
-- `/delete <номер>` - Удалить занятие по номеру
-- `/today` - Показать занятия на сегодня
-- `/help` - Справка по командам
+### **Krok 1: Start**
+Wyślij `/start` aby zobaczyć menu główne
 
-## Примеры использования
+### **Krok 2: Umów lekcję**
+1. Kliknij "📅 Umów lekcję"
+2. Wybierz rodzaj lekcji
+3. Wybierz dostępny termin
+4. Podaj email i telefon
+5. Potwierdź rezerwację
+
+### **Krok 3: Zarządzaj**
+- 📋 **Moje rezerwacje** - zobacz swoje lekcje
+- ℹ️ **Informacje** - o nauczycielu i metodach
+- 📞 **Kontakt** - bezpośredni kontakt
+
+## 🛠 Struktura projektu
 
 ```
-/add Математика 10:00-11:30
-/add Английский язык 14:00
-/list
-/delete 1
-/today
+polish-teacher-bot/
+├── polish-teacher-bot.js    # Główny plik bota 
+├── bot.js                   # Stary bot (schedule)
+├── package.json             # Zależności
+├── .env                     # Token bota
+├── .gitignore              # Ignorowane pliki
+└── README.md               # Dokumentacja
 ```
 
-## Развертывание
+## 🌟 Funkcje zaawansowane
 
-### На сервере
-1. Загрузите код на сервер
-2. Установите Node.js
-3. Установите зависимости: `npm install`
-4. Запустите: `npm start`
+### **Inteligentny harmonogram**
+- Pokazuje tylko dostępne terminy
+- Filtruje przeszłe godziny
+- Automatycznie zarządza rezerwacjami
 
-### Heroku
-1. Создайте аккаунт на Heroku
-2. Установите Heroku CLI
-3. Выполните команды:
+### **Wielojęzyczna obsługa**
+- 🇵🇱 Polski (główny)
+- 🇬🇧 English
+- 🇺🇦 Українська  
+- 🇷🇺 Русский
+
+### **Profesjonalne potwierdzenia**
+- Email z szczegółami lekcji
+- Link do Zoom wysyłany 24h wcześniej
+- Przypomnienia o lekcjach
+
+## 🚀 Deployment
+
+### **Render (bezpłatny)**
+1. Push kod do GitHub
+2. Połącz z Render.com
+3. Dodaj `BOT_TOKEN` w Environment Variables
+4. Deploy automatycznie!
+
+### **Heroku**
 ```bash
-heroku create your-bot-name
-heroku config:set BOT_TOKEN=ваш_токен
+heroku create polish-teacher-bot
+heroku config:set BOT_TOKEN=twój_token
 git push heroku main
 ```
 
-## Структура проекта
-
-```
-alina_bot/
-├── bot.js          # Основной файл бота
-├── package.json    # Зависимости и скрипты
-├── .env           # Переменные окружения (токен)
-├── .gitignore     # Игнорируемые файлы
-└── README.md      # Документация
+### **VPS/Server**
+```bash
+pm2 start polish-teacher-bot.js --name "polish-bot"
+pm2 startup
+pm2 save
 ```
 
-## Планы по развитию
+## 📊 Przykład użycia
 
-- [ ] Добавление времени к занятиям
-- [ ] Уведомления о предстоящих занятиях
-- [ ] Поддержка повторяющихся занятий
-- [ ] Экспорт расписания
-- [ ] Веб-интерфейс для управления
+```
+👤 Uczeń: /start
+🤖 Bot: Witaj! Jestem Anna, nauczyciel polskiego...
+
+👤 Uczeń: [Klik "Umów lekcję"]
+🤖 Bot: Wybierz rodzaj lekcji...
+
+👤 Uczeń: [Wybiera "Konwersacje"] 
+🤖 Bot: Dostępne terminy dla konwersacji...
+
+👤 Uczeń: [Wybiera "Środa 15:00"]
+🤖 Bot: Podaj swój email...
+
+👤 Uczeń: jan@example.com
+🤖 Bot: Podaj numer telefonu...
+
+👤 Uczeń: +48 123 456 789
+🤖 Bot: Potwierdzenie rezerwacji...
+
+👤 Uczeń: [Potwierdza]
+🤖 Bot: 🎉 Rezerwacja potwierdzona!
+```
+
+## 🎯 Różnice od prostego schedule bot
+
+| Funkcja | Stary Bot | Nowy Bot |
+|---------|-----------|----------|
+| **UI** | Podstawowe komendy | Inline keyboards |
+| **Proces** | Jedno-krokowo | Multi-step wizard |
+| **Dane** | Tylko tekst | Email + telefon |
+| **Typy** | Jeden | 6 różnych typów lekcji |
+| **Ceny** | Brak | Różne dla każdego typu |
+| **Profesjonalizm** | Prosty | Pełny biznes-flow |
+
+## 📈 Planowane rozszerzenia
+
+- [ ] 📅 Integracja z Google Calendar
+- [ ] 💳 Płatności online (Stripe/PayPal)
+- [ ] 📧 Automatyczne emaile
+- [ ] 📱 Przypomnienia SMS
+- [ ] 🎥 Integracja z Zoom API
+- [ ] 📊 Panel admina
+- [ ] 🌍 Obsługa czasów stref
+- [ ] 📝 System recenzji
+
+## 👩‍🏫 O nauczycielu
+
+**Anna Kowalska** - Certyfikowany nauczyciel języka polskiego
+- 8+ lat doświadczenia w nauczaniu online
+- Specjalizacja: egzaminy, biznes, konwersacje  
+- Absolwentka filologii polskiej UW
+- Certyfikaty: CAE, TESOL, CEF
+
+## 📞 Support
+
+- 📧 Email: anna.kowalska@email.com
+- 📱 WhatsApp: +48 123 456 789  
+- 🌐 Website: www.polskionline.pl
+
+---
+*Stworzony z ❤️ dla miłośników języka polskiego*

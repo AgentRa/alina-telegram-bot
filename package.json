@@ -1,15 +1,16 @@
 {
-  "name": "alina_bot",
+  "name": "polish-teacher-bot",
   "version": "1.0.0",
-  "description": "Telegram бот для ведения расписания занятий",
-  "main": "bot.js",
+  "description": "Telegram бот для записи на уроки польского языка",
+  "main": "polish-teacher-bot.js",
   "scripts": {
-    "start": "node bot.js",
-    "dev": "nodemon bot.js",
+    "start": "node polish-teacher-bot.js",
+    "dev": "nodemon polish-teacher-bot.js",
+    "old-bot": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["telegram", "bot", "schedule", "расписание"],
-  "author": "",
+  "keywords": ["telegram", "bot", "polish", "teacher", "lessons", "booking"],
+  "author": "Anna Kowalska - Polish Teacher",
   "license": "ISC",
   "dependencies": {
     "node-telegram-bot-api": "^0.66.0",
