@@ -4,6 +4,18 @@ const moment = require('moment-timezone');
 const http = require('http'); // Using built-in http for the server
 require('dotenv').config();
 
+// --- DEBUGGING ENV VARS ---
+console.log('--- Отладка переменных окружения ---');
+console.log('RENDER_EXTERNAL_URL:', process.env.RENDER_EXTERNAL_URL || 'НЕ УСТАНОВЛЕНО');
+console.log('PORT:', process.env.PORT || 'НЕ УСТАНОВЛЕНО');
+if (process.env.GOOGLE_CREDENTIALS) {
+    console.log('GOOGLE_CREDENTIALS начинается с:', process.env.GOOGLE_CREDENTIALS.substring(0, 40) + '...');
+} else {
+    console.log('GOOGLE_CREDENTIALS: НЕ УСТАНОВЛЕНО');
+}
+console.log('--- Конец отладки ---');
+// --- END DEBUGGING ---
+
 const token = process.env.BOT_TOKEN;
 const port = process.env.PORT || 3000;
 const url = process.env.RENDER_EXTERNAL_URL; // The public URL of the Render service
