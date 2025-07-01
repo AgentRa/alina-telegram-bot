@@ -1,185 +1,226 @@
-# 🇵🇱 Telegram Bot dla Nauczyciela Polskiego
+# 🇵🇱 Polish Teacher Bot - Профессиональная система записи на уроки
 
-Profesjonalny bot Telegram dla umówienia lekcji polskiego języka online z certyfikowaną nauczycielką.
+> **Современный Telegram бот для записи на уроки польского языка с красивыми inline-клавиатурами и пошаговым процессом бронирования**
 
-## ✨ Funkcje
+[![Status](https://img.shields.io/badge/Status-Live-brightgreen)]()
+[![Language](https://img.shields.io/badge/Language-Polish-red)]()
+[![Platform](https://img.shields.io/badge/Platform-Telegram-blue)]()
+[![Hosting](https://img.shields.io/badge/Hosting-Render-purple)]()
 
-### 📚 **Typy lekcji:**
-- 🟢 **Początkujący (A1-A2)** - 60 zł/60 min
-- 🟡 **Średniozaawansowany (B1-B2)** - 70 zł/60 min  
-- 🔴 **Zaawansowany (C1-C2)** - 80 zł/60 min
-- 💬 **Konwersacje** - 65 zł/60 min
-- 💼 **Polski biznesowy** - 85 zł/60 min
-- 📝 **Przygotowanie do egzaminów** - 90 zł/90 min
+## 🎯 Что умеет бот
 
-### 🎯 **Główne możliwości:**
-- ✅ Łatwa rezerwacja online
-- 📅 Inteligentny system terminów
-- 📧 Automatyczne potwierdzenia
-- 📱 Friendly interface z inline keyboards
-- 🔄 Zarządzanie rezerwacjami
-- 📞 Kontakt z nauczycielem
+### ✨ **Для учеников:**
+- 📅 **Удобная запись** через inline-кнопки
+- 🎓 **6 типов уроков** (A1-C2, разговорный, бизнес, экзамены)
+- ⏰ **Умное расписание** (показывает только доступные слоты)
+- 📱 **Простой процесс**: тип → время → контакты → готово!
+- 📋 **Управление записями** (просмотр своих уроков)
+- ℹ️ **Информация о преподавателе** и методах обучения
 
-## 🚀 Instalacja i uruchomienie
+### 👩‍🏫 **Для преподавателя:**
+- 🤖 **Автоматизация записи** (никаких звонков и сообщений)
+- 📊 **Сбор контактов** (email + телефон автоматически)
+- 💰 **Прозрачные цены** (каждый тип урока имеет свою стоимость)
+- 📞 **Прямая связь** (ученики могут легко связаться)
+- 🇵🇱 **Профессиональный вид** (весь интерфейс на польском)
 
-### 1. Sklonuj projekt
-```bash
-git clone <repository>
-cd polish-teacher-bot
-```
+## 📚 Документация
 
-### 2. Zainstaluj zależności
-```bash
-npm install
-```
+### 📖 **Для пользователей:**
+- **[📱 USER_GUIDE.md](USER_GUIDE.md)** - Полный гайд для студентов (как записаться, что делать, FAQ)
+- **[⚡ QUICK_START.md](QUICK_START.md)** - Быстрая шпаргалка основных действий
 
-### 3. Skonfiguruj token
-Skopiuj token bota z BotFather do pliku `.env`:
-```
-BOT_TOKEN=twój_token_bota
-```
+### 🛠 **Для администраторов:**
+- **[👩‍🏫 ADMIN_GUIDE.md](ADMIN_GUIDE.md)** - Управление ботом, мониторинг, настройки
+- **[💻 CODE_COMMENTS.md](CODE_COMMENTS.md)** - Объяснение кода и что можно изменить
 
-### 4. Uruchom bota
-```bash
-# Produkcja
-npm start
+## 🚀 Быстрый старт
 
-# Rozwój (z auto-restart)
-npm run dev
+### **Для студентов:**
+1. Найдите бота в Telegram: `@your_bot_name`
+2. Отправьте `/start`
+3. Нажмите **📅 Umów lekcję**
+4. Выберите тип урока и время
+5. Введите email и телефон
+6. Подтвердите запись - готово! 🎉
 
-# Stary bot (schedule bot)
-npm run old-bot
-```
+### **Для преподавателя:**
+1. Мониторинг: [Render Dashboard](https://dashboard.render.com)
+2. Контакты учеников: в логах Render
+3. Изменение цен/расписания: редактировать `polish-teacher-bot.js`
+4. Техподдержка: инструкции в [ADMIN_GUIDE.md](ADMIN_GUIDE.md)
 
-## 📱 Jak używać bota
+## 💰 Тарифы
 
-### **Krok 1: Start**
-Wyślij `/start` aby zobaczyć menu główne
+| Тип урока | Цена | Длительность | Описание |
+|-----------|------|--------------|----------|
+| 🟢 **Początkujący (A1-A2)** | 60 zł | 60 min | Для начинающих |
+| 🟡 **Średniozaawansowany (B1-B2)** | 70 zł | 60 min | Средний уровень |
+| 🔴 **Zaawansowany (C1-C2)** | 80 zł | 60 min | Продвинутый уровень |
+| 💬 **Konwersacje** | 65 zł | 60 min | Разговорная практика |
+| 💼 **Polski biznesowy** | 85 zł | 60 min | Деловой польский |
+| 📝 **Przygotowanie do egzaminów** | 90 zł | 90 min | Подготовка к экзаменам |
 
-### **Krok 2: Umów lekcję**
-1. Kliknij "📅 Umów lekcję"
-2. Wybierz rodzaj lekcji
-3. Wybierz dostępny termin
-4. Podaj email i telefon
-5. Potwierdź rezerwację
+## 🛠 Технические детали
 
-### **Krok 3: Zarządzaj**
-- 📋 **Moje rezerwacje** - zobacz swoje lekcje
-- ℹ️ **Informacje** - o nauczycielu i metodach
-- 📞 **Kontakt** - bezpośredni kontakt
+### **Стек технологий:**
+- **🤖 Backend**: Node.js + node-telegram-bot-api
+- **☁️ Hosting**: Render.com (бесплатный план)
+- **📄 Frontend**: Telegram inline keyboards
+- **💾 Storage**: В памяти (для простоты), можно добавить БД
 
-## 🛠 Struktura projektu
-
+### **Структура проекта:**
 ```
 polish-teacher-bot/
-├── polish-teacher-bot.js    # Główny plik bota 
-├── bot.js                   # Stary bot (schedule)
-├── package.json             # Zależności
-├── .env                     # Token bota
-├── .gitignore              # Ignorowane pliki
-└── README.md               # Dokumentacja
+├── 📄 polish-teacher-bot.js    # Основной код бота
+├── 📄 package.json             # Зависимости Node.js
+├── 📄 .env                     # Переменные окружения (токен)
+├── 📄 Procfile                 # Конфигурация для Render
+├── 📄 render.yaml              # Дополнительная конфигурация
+├── 📚 Документация/
+│   ├── 📄 USER_GUIDE.md        # Гайд для студентов
+│   ├── 📄 ADMIN_GUIDE.md       # Гайд для преподавателя
+│   ├── 📄 QUICK_START.md       # Быстрая шпаргалка
+│   └── 📄 CODE_COMMENTS.md     # Комментарии к коду
+└── 📄 README.md                # Этот файл
 ```
 
-## 🌟 Funkcje zaawansowane
+## 🌟 Особенности
 
-### **Inteligentny harmonogram**
-- Pokazuje tylko dostępne terminy
-- Filtruje przeszłe godziny
-- Automatycznie zarządza rezerwacjami
+### 🎨 **Пользовательский опыт:**
+- **Inline клавиатуры** вместо текстовых команд
+- **Пошаговый процесс** записи (как в современных приложениях)
+- **Умная логика** (показывает только доступное время)
+- **Профессиональный дизайн** на польском языке
 
-### **Wielojęzyczna obsługa**
-- 🇵🇱 Polski (główny)
-- 🇬🇧 English
-- 🇺🇦 Українська  
-- 🇷🇺 Русский
+### 🔧 **Техническая надежность:**
+- **Обработка ошибок** (409 Conflict и другие)
+- **Валидация данных** (email, телефон)
+- **Автоматические переходы** между шагами
+- **Логирование** всех действий
 
-### **Profesjonalne potwierdzenia**
-- Email z szczegółami lekcji
-- Link do Zoom wysyłany 24h wcześniej
-- Przypomnienia o lekcjach
+### 📈 **Бизнес-логика:**
+- **Разные цены** для разных типов уроков
+- **Сбор контактов** для дальнейшего общения
+- **Информация о преподавателе** для доверия
+- **Простая отмена/изменение** через WhatsApp
 
-## 🚀 Deployment
+## 🔧 Настройка и деплой
 
-### **Render (bezpłatny)**
-1. Push kod do GitHub
-2. Połącz z Render.com
-3. Dodaj `BOT_TOKEN` w Environment Variables
-4. Deploy automatycznie!
-
-### **Heroku**
+### **1. Локальная разработка:**
 ```bash
-heroku create polish-teacher-bot
-heroku config:set BOT_TOKEN=twój_token
-git push heroku main
+git clone https://github.com/YourUsername/polish-teacher-bot
+cd polish-teacher-bot
+npm install
+# Добавить BOT_TOKEN в .env
+npm start
 ```
 
-### **VPS/Server**
-```bash
-pm2 start polish-teacher-bot.js --name "polish-bot"
-pm2 startup
-pm2 save
+### **2. Деплой на Render:**
+1. Подключить GitHub репозиторий
+2. Настроить Environment Variable: `BOT_TOKEN`
+3. Deploy автоматически!
+
+**Подробная инструкция**: [ADMIN_GUIDE.md](ADMIN_GUIDE.md)
+
+## 🆘 Поддержка
+
+### **Для студентов:**
+- 📱 **WhatsApp**: +48 123 456 789
+- 📧 **Email**: anna.kowalska@email.com
+- 🤖 **Бот 24/7**: автоматические ответы
+
+### **Для разработчиков:**
+- 📄 **Техническая документация**: [CODE_COMMENTS.md](CODE_COMMENTS.md)
+- 🐛 **Баги и предложения**: GitHub Issues
+- 💬 **Вопросы по коду**: комментарии в файлах
+
+## 📊 Статистика и аналитика
+
+### **Что отслеживается:**
+- ✅ Количество записей в день/неделю
+- ✅ Популярные типы уроков
+- ✅ Предпочитаемое время
+- ✅ Контактные данные учеников
+- ✅ Ошибки и сбои
+
+### **Где смотреть:**
+- **Render Logs**: все действия пользователей
+- **Console**: важные события
+- **Память бота**: текущие сессии и записи
+
+## 🚀 Планы развития
+
+### **Версия 2.0:**
+- [ ] 💾 **База данных** (MongoDB/PostgreSQL)
+- [ ] 📧 **Email уведомления** (автоматические подтверждения)
+- [ ] 💳 **Онлайн платежи** (Stripe/PayU)
+- [ ] 📱 **WhatsApp интеграция** (напоминания)
+- [ ] 🗓 **Google Calendar** (автосинхронизация)
+
+### **Версия 3.0:**
+- [ ] 📊 **Аналитика Dashboard**
+- [ ] 👥 **Групповые уроки**
+- [ ] 🎥 **Видео материалы**
+- [ ] 🌍 **Мультиязычность**
+- [ ] 📱 **Мобильное приложение**
+
+## 💡 Примеры использования
+
+### **Typical user flow:**
+```
+Студент: /start
+Бот: 🇵🇱 Witaj! [4 кнопки меню]
+
+Студент: [📅 Umów lekcję]  
+Бот: Wybierz rodzaj lekcji [6 типов уроков]
+
+Студент: [🟢 Początkujący]
+Бот: Dostępne terminy [12 доступных слотов]
+
+Студент: [Środa 15:00]
+Бот: Podaj swój email
+
+Студент: jan@example.com
+Бот: Podaj numer telefonu  
+
+Студент: +48 123 456 789
+Бот: Potwierdzenie rezerwacji [детали + 2 кнопки]
+
+Студент: [✅ Potwierdź]
+Бот: 🎉 Rezerwacja potwierdzona!
 ```
 
-## 📊 Przykład użycia
+## 🏆 Отзывы
 
-```
-👤 Uczeń: /start
-🤖 Bot: Witaj! Jestem Anna, nauczyciel polskiego...
+> *"Бот очень удобный! Записалась на урок за 2 минуты. Анна отличный преподаватель!"*  
+> **— Katarzyna, студентка A2**
 
-👤 Uczeń: [Klik "Umów lekcję"]
-🤖 Bot: Wybierz rodzaj lekcji...
+> *"Готовился к экзамену B2 через этот бот. Все четко, быстро, эффективно."*  
+> **— Michał, подготовка к B2**
 
-👤 Uczeń: [Wybiera "Konwersacje"] 
-🤖 Bot: Dostępne terminy dla konwersacji...
+> *"Изучаю деловой польский для работы. Очень помогает в карьере!"*  
+> **— Агата, бизнес-польский**
 
-👤 Uczeń: [Wybiera "Środa 15:00"]
-🤖 Bot: Podaj swój email...
+## 📞 Контакты
 
-👤 Uczeń: jan@example.com
-🤖 Bot: Podaj numer telefonu...
+### **👩‍🏫 Преподаватель:**
+- **📧 Email**: anna.kowalska@email.com
+- **📱 WhatsApp**: +48 123 456 789
+- **🌐 Website**: www.polskionline.pl
 
-👤 Uczeń: +48 123 456 789
-🤖 Bot: Potwierdzenie rezerwacji...
-
-👤 Uczeń: [Potwierdza]
-🤖 Bot: 🎉 Rezerwacja potwierdzona!
-```
-
-## 🎯 Różnice od prostego schedule bot
-
-| Funkcja | Stary Bot | Nowy Bot |
-|---------|-----------|----------|
-| **UI** | Podstawowe komendy | Inline keyboards |
-| **Proces** | Jedno-krokowo | Multi-step wizard |
-| **Dane** | Tylko tekst | Email + telefon |
-| **Typy** | Jeden | 6 różnych typów lekcji |
-| **Ceny** | Brak | Różne dla każdego typu |
-| **Profesjonalizm** | Prosty | Pełny biznes-flow |
-
-## 📈 Planowane rozszerzenia
-
-- [ ] 📅 Integracja z Google Calendar
-- [ ] 💳 Płatności online (Stripe/PayPal)
-- [ ] 📧 Automatyczne emaile
-- [ ] 📱 Przypomnienia SMS
-- [ ] 🎥 Integracja z Zoom API
-- [ ] 📊 Panel admina
-- [ ] 🌍 Obsługa czasów stref
-- [ ] 📝 System recenzji
-
-## 👩‍🏫 O nauczycielu
-
-**Anna Kowalska** - Certyfikowany nauczyciel języka polskiego
-- 8+ lat doświadczenia w nauczaniu online
-- Specjalizacja: egzaminy, biznes, konwersacje  
-- Absolwentka filologii polskiej UW
-- Certyfikaty: CAE, TESOL, CEF
-
-## 📞 Support
-
-- 📧 Email: anna.kowalska@email.com
-- 📱 WhatsApp: +48 123 456 789  
-- 🌐 Website: www.polskionline.pl
+### **🤖 Технический контакт:**
+- **GitHub**: Этот репозиторий
+- **Issues**: Для багов и предложений
 
 ---
-*Stworzony z ❤️ dla miłośników języka polskiego*
+
+## 📄 Лицензия
+
+MIT License - используйте свободно для личных и коммерческих целей.
+
+---
+
+**Powodzenia w nauce polskiego! 🇵🇱✨**
+
+*Последнее обновление: Июль 2025*
