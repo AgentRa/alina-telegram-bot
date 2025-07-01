@@ -298,9 +298,7 @@ async function createCalendarEvent(slotTime, lessonType, userInfo) {
                 dateTime: endTime.toISOString(),
                 timeZone: TIMEZONE,
             },
-            attendees: [
-                { email: userInfo.email, displayName: userInfo.name || userInfo.email.split('@')[0] }
-            ],
+            
             reminders: {
                 useDefault: false,
                 overrides: [
