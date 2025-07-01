@@ -7,7 +7,7 @@ function escapeMarkdownV2(text) {
     }
     // Escape characters that have special meaning in MarkdownV2
     // List of special characters: _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !
-    return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\return text.replace(/[_*\[\]()~`>#+\-=|{}.!]/g, '\\const TelegramBot = require('node-telegram-bot-api');');');
+    return text.replace(/[_*[\\\]()~`>#+\\-=|{}.!]/g, '\\return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\return text.replace(/[_*\[\]()~`>#+\-=|{}.!]/g, '\\const TelegramBot = require('node-telegram-bot-api');');');');
 }
 
 
