@@ -125,6 +125,7 @@ function initializeGoogleCalendar() {
 let userSessions = {};
 let localSchedule = {};
 let bookings = {};
+let userProfiles = {}; // Для хранения постоянных данных пользователя
 
 // Типы уроков
 const lessonTypes = {
@@ -296,13 +297,14 @@ async function createCalendarEvent(slotTime, lessonType, userInfo) {
     
     try {
         const event = {
-            summary: `${lesson.name} - ${userInfo.name || userInfo.email.split('@')[0]}`,
+            summary: `${lesson.name} - ${userInfo.name}`,
             description: `
 📚 Typ lekcji: ${lesson.name}
 💰 Cena: ${lesson.price}
 ⏰ Czas trwania: ${lesson.duration} minut
 
 👤 Student:
+📝 Imię: ${userInfo.name}
 📧 Email: ${userInfo.email}
 📱 Telefon: ${userInfo.phone}
 🆔 Telegram: ${userInfo.userId}
@@ -357,7 +359,7 @@ async function sendConfirmationEmail(bookingDetails) {
         return;
     }
 
-    const { email, lessonType, timeSlot, duration, price, meetLink } = bookingDetails;
+    const { email, lessonType, timeSlot, duration, price, meetLink, name } = bookingDetails;
     const selectedLesson = lessonTypes[lessonType];
     const slotTime = moment(timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
 
@@ -368,7 +370,7 @@ async function sendConfirmationEmail(bookingDetails) {
         to: email,
         subject: `Potwierdzenie rezerwacji lekcji polskiego - ${selectedLesson.name}`,
         html: `
-            <p>Witaj,</p>
+            <p>Witaj ${name},</p>
             <p>Dziękujemy za rezerwację lekcji języka polskiego!</p>
             <p>Oto szczegóły Twojej rezerwacji:</p>
             <ul>
@@ -438,10 +440,31 @@ bot.onText(/\/start/, async (msg) => {
         lessonType: null,
         timeSlot: null,
         email: null,
-        phone: null
+        phone: null,
+        name: null
     };
 
-    // Проверяем статус календаря для отладки
+    // Проверяем, есть ли уже профиль пользователя
+    if (userProfiles[userId]) {
+        // Если профиль есть, используем его данные
+        userSessions[userId].name = userProfiles[userId].name;
+        userSessions[userId].email = userProfiles[userId].email;
+        userSessions[userId].phone = userProfiles[userId].phone;
+        await sendWelcomeMessage(chatId, userId, userProfiles[userId].name);
+    } else {
+        // Если профиля нет, запрашиваем имя
+        userSessions[userId].step = 'waiting_name';
+        bot.sendMessage(chatId, `
+🇵🇱 *Witaj ${userName}!*
+
+Jestem Anna Kowalska, certyfikowany nauczyciel języka polskiego! 👩‍🏫
+
+Zanim zaczniemy, proszę, podaj swoje imię:`, { parse_mode: 'Markdown' });
+    }
+});
+
+// Отправка приветственного сообщения (вынесено в отдельную функцию)
+async function sendWelcomeMessage(chatId, userId, userName) {
     const calendarStatus = await checkCalendarStatus();
     console.log(`📊 Статус календаря для пользователя ${userId}: ${calendarStatus}`);
 
@@ -484,7 +507,7 @@ Aby umówić lekcję, kliknij przycisk poniżej! 👇
         parse_mode: 'Markdown',
         reply_markup: keyboard
     });
-});
+}
 
 // Команда для отладки календаря (только для разработки)
 bot.onText(/\/debug/, async (msg) => {
@@ -659,6 +682,16 @@ async function askForContactInfo(chatId, messageId, userId) {
     const selectedLesson = lessonTypes[session.lessonType];
     const slotTime = moment(session.timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
 
+    // Если у нас уже есть данные пользователя, переходим к подтверждению
+    if (userProfiles[userId] && userProfiles[userId].name && userProfiles[userId].email && userProfiles[userId].phone) {
+        session.name = userProfiles[userId].name;
+        session.email = userProfiles[userId].email;
+        session.phone = userProfiles[userId].phone;
+        session.step = 'confirmation';
+        showBookingConfirmation(chatId, userId);
+        return;
+    }
+
     const message = `
 ✅ *Wybrano:*
 📚 ${selectedLesson.name}
@@ -666,8 +699,7 @@ async function askForContactInfo(chatId, messageId, userId) {
 💰 ${selectedLesson.price}
 ⏰ Czas trwania: ${selectedLesson.duration} minut
 
-📧 *Podaj swój email dla potwierdzenia:*
-(Wyślij wiadomość z adresem email)
+📝 *Proszę, podaj swoje imię:*
 `;
 
     bot.editMessageText(message, {
@@ -681,11 +713,11 @@ async function askForContactInfo(chatId, messageId, userId) {
         }
     });
 
-    userSessions[userId].step = 'waiting_email';
+    userSessions[userId].step = 'waiting_name_for_booking';
 }
 
 // Обработка текстовых сообщений
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     const text = msg.text;
@@ -695,7 +727,25 @@ bot.on('message', (msg) => {
 
     const session = userSessions[userId];
 
-    if (session.step === 'waiting_email') {
+    if (session.step === 'waiting_name') {
+        session.name = text;
+        userSessions[userId].step = 'waiting_email';
+        bot.sendMessage(chatId, `
+✅ Imię zapisane: ${text}
+
+📧 *Teraz podaj swój email dla potwierdzenia:*
+(Wyślij wiadomość z adresem email)
+`, { parse_mode: 'Markdown' });
+    } else if (session.step === 'waiting_name_for_booking') {
+        session.name = text;
+        userSessions[userId].step = 'waiting_email';
+        bot.sendMessage(chatId, `
+✅ Imię zapisane: ${text}
+
+📧 *Teraz podaj swój email dla potwierdzenia:*
+(Wyślij wiadomość z adresem email)
+`, { parse_mode: 'Markdown' });
+    } else if (session.step === 'waiting_email') {
         if (isValidEmail(text)) {
             session.email = text;
             session.step = 'waiting_phone';
@@ -712,6 +762,12 @@ bot.on('message', (msg) => {
     } else if (session.step === 'waiting_phone') {
         if (isValidPhone(text)) {
             session.phone = text;
+            // Сохраняем данные в userProfiles для будущего использования
+            userProfiles[userId] = {
+                name: session.name,
+                email: session.email,
+                phone: session.phone
+            };
             session.step = 'confirmation';
             showBookingConfirmation(chatId, userId);
         } else {
@@ -730,6 +786,7 @@ function showBookingConfirmation(chatId, userId) {
 📋 *Potwierdzenie rezerwacji:*
 
 👤 **Dane kontaktowe:**
+📝 Imię: ${session.name}
 📧 Email: ${session.email}
 📱 Telefon: ${session.phone}
 
@@ -807,7 +864,8 @@ async function confirmBooking(chatId, messageId, userId) {
                 timeSlot: session.timeSlot,
                 duration: selectedLesson.duration,
                 price: selectedLesson.price,
-                meetLink: result.meetLink
+                meetLink: result.meetLink,
+                name: session.name
             });
 
             const meetLinkText = result.meetLink ? `\n🔗 **Link Google Meet:** ${result.meetLink}` : '';
