@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Output of 'npm pack'
+*.tgz
+
+# Temporary folders
+tmp/
+temp/
