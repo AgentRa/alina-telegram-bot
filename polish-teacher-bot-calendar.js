@@ -1,4 +1,16 @@
 const TelegramBot = require('node-telegram-bot-api');
+
+// Define a local helper function for MarkdownV2 escaping
+function escapeMarkdownV2(text) {
+    if (typeof text !== 'string') {
+        return '';
+    }
+    // Escape characters that have special meaning in MarkdownV2
+    // List of special characters: _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., !
+    return text.replace(/[_*\[\]()~`>#+\-=|{}.!]/g, '\\const TelegramBot = require('node-telegram-bot-api');');
+}
+
+
 const { google } = require('googleapis');
 const moment = require('moment-timezone');
 const http = require('http'); // Using built-in http for the server
@@ -422,14 +434,6 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidPhone(phone) {
-    console.log(`DEBUG: Validating phone: ${phone}`);
-    const cleanedPhone = phone.replace(/[\s\-\(\)]/g, '');
-    const isValid = /^[\+]?[1-9][\d]{8,14}$/.test(cleanedPhone);
-    console.log(`DEBUG: Cleaned phone: ${cleanedPhone}, Is valid: ${isValid}`);
-    return isValid;
-}
-
 // Инициализация
 initializeGoogleCalendar();
 
@@ -443,9 +447,7 @@ bot.onText(/\/start/, async (msg) => {
         step: 'start',
         lessonType: null,
         timeSlot: null,
-        email: null,
-        phone: null,
-        name: null
+        email: null
     };
 
     // Проверяем, есть ли уже профиль пользователя
@@ -687,10 +689,9 @@ async function askForContactInfo(chatId, messageId, userId) {
     const slotTime = moment(session.timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
 
     // Если у нас уже есть данные пользователя, переходим к подтверждению
-    if (userProfiles[userId] && userProfiles[userId].name && userProfiles[userId].email && userProfiles[userId].phone) {
+    if (userProfiles[userId] && userProfiles[userId].name && userProfiles[userId].email) {
         session.name = userProfiles[userId].name;
         session.email = userProfiles[userId].email;
-        session.phone = userProfiles[userId].phone;
         session.step = 'confirmation';
         showBookingConfirmation(chatId, userId);
         return;
@@ -752,31 +753,15 @@ bot.on('message', async (msg) => {
     } else if (session.step === 'waiting_email') {
         if (isValidEmail(text)) {
             session.email = text;
-            session.step = 'waiting_phone';
-            
-            bot.sendMessage(chatId, `
-✅ Email zapisany: ${text}
-
-📱 *Teraz podaj numer telefonu:*
-(np. +48 123 456 789 lub 123456789)
-`, { parse_mode: 'Markdown' });
-        } else {
-            bot.sendMessage(chatId, '❌ Podaj prawidłowy adres email (np. nazwa@domena.pl)');
-        }
-    } else if (session.step === 'waiting_phone') {
-        console.log(`DEBUG: Received phone input: ${text}`);
-        if (isValidPhone(text)) {
-            session.phone = text;
             // Сохраняем данные в userProfiles для будущего использования
             userProfiles[userId] = {
                 name: session.name,
-                email: session.email,
-                phone: session.phone
+                email: session.email
             };
             session.step = 'confirmation';
             showBookingConfirmation(chatId, userId);
         } else {
-            bot.sendMessage(chatId, '❌ Podaj prawidłowy numer telefonu (np. +48 123 456 789)');
+            bot.sendMessage(chatId, '❌ Podaj prawidłowy adres email (np. nazwa@domena.pl)');
         }
     }
 });
@@ -787,9 +772,9 @@ function showBookingConfirmation(chatId, userId) {
     const selectedLesson = lessonTypes[session.lessonType];
     const slotTime = moment(session.timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
 
-    const escapedName = TelegramBot.escapeMarkdownV2(session.name || '');
-    const escapedEmail = TelegramBot.escapeMarkdownV2(session.email || '');
-    const escapedPhone = TelegramBot.escapeMarkdownV2(session.phone || '');
+    const escapedName = escapeMarkdownV2(session.name || '');
+    const escapedEmail = escapeMarkdownV2(session.email || '');
+    const escapedPhone = escapeMarkdownV2(session.phone || '');
 
     const message = `
 📋 *Potwierdzenie rezerwacji:*
@@ -797,18 +782,17 @@ function showBookingConfirmation(chatId, userId) {
 👤 \*\*Dane kontaktowe:\*\*
 📝 Imię: ${escapedName}
 📧 Email: ${escapedEmail}
-📱 Telefon: ${escapedPhone}
 
 📚 \*\*Lekcja:\*\*
-${TelegramBot.escapeMarkdownV2(selectedLesson.name)}
-${TelegramBot.escapeMarkdownV2(selectedLesson.description)}
+${escapeMarkdownV2(selectedLesson.name)}
+${escapeMarkdownV2(selectedLesson.description)}
 
 📅 \*\*Termin:\*\*
-${TelegramBot.escapeMarkdownV2(slotTime.format('DD.MM.YYYY (dddd)'))}
-🕐 ${TelegramBot.escapeMarkdownV2(slotTime.format('HH:mm'))} - ${TelegramBot.escapeMarkdownV2(slotTime.clone().add(selectedLesson.duration, 'minutes').format('HH:mm'))}
-⏰ Czas trwania: ${TelegramBot.escapeMarkdownV2(selectedLesson.duration.toString())} minut
+${escapeMarkdownV2(slotTime.format('DD.MM.YYYY (dddd)'))}
+🕐 ${escapeMarkdownV2(slotTime.format('HH:mm'))} - ${escapeMarkdownV2(slotTime.clone().add(selectedLesson.duration, 'minutes').format('HH:mm'))}
+⏰ Czas trwania: ${escapeMarkdownV2(selectedLesson.duration.toString())} minut
 
-💰 \*\*Koszt:\*\* ${TelegramBot.escapeMarkdownV2(selectedLesson.price)}
+💰 \*\*Koszt:\*\* ${escapeMarkdownV2(selectedLesson.price)}
 
 🔗 \*\*Link do Zoom zostanie przesłany na email przed lekcją\*\*
 📅 \*\*Wydarzenie zostanie dodane do mojego kalendarza i Twojego\*\*
@@ -852,7 +836,6 @@ async function confirmBooking(chatId, messageId, userId) {
         const result = await createCalendarEvent(slotTime, session.lessonType, {
             userId: userId,
             email: session.email,
-            phone: session.phone,
             name: session.email.split('@')[0]
         });
         
@@ -866,7 +849,6 @@ async function confirmBooking(chatId, messageId, userId) {
                 lessonType: session.lessonType,
                 dateTime: session.timeSlot,
                 email: session.email,
-                phone: session.phone,
                 bookedAt: new Date(),
                 status: 'confirmed'
             });
@@ -973,11 +955,15 @@ async function showUserBookings(chatId, messageId, userId) {
         const bookingTime = moment(booking.dateTime, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
         
         message += `${index + 1}. **${bookingTime.format('DD.MM.YYYY (dddd) HH:mm')}**\n`;
-        message += `📚 ${lesson.name}\n`;
-        message += `💰 ${lesson.price}\n`;
-        message += `📧 ${booking.email}\n`;
-        message += `📱 ${booking.phone}\n`;
-        message += `🆔 ID: ${booking.id.substring(0, 8)}\n\n`;
+        message += `📚 ${lesson.name}
+`;
+        message += `💰 ${lesson.price}
+`;
+        message += `📧 ${booking.email}
+`;
+        message += `🆔 ID: ${booking.id.substring(0, 8)}
+
+`;
     });
 
     bot.editMessageText(message, {
