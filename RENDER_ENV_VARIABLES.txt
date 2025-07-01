@@ -1,0 +1,66 @@
+ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ДЛЯ RENDER.COM
+=====================================
+
+СКОПИРУЙТЕ И ВСТАВЬТЕ В ENVIRONMENT VARIABLES НА RENDER:
+
+# ОБЯЗАТЕЛЬНЫЕ ПЕРЕМЕННЫЕ
+BOT_TOKEN=7769373001:AAHwJ_IL-KEsVOldAKwc2ZMCz9Zu7ZyZwfM
+PORT=3000
+
+# НАСТРОЙКИ РАСПИСАНИЯ
+TEACHER_WORKING_HOURS_START=9
+TEACHER_WORKING_HOURS_END=20
+LESSON_DURATION_MINUTES=60
+BREAK_BETWEEN_LESSONS_MINUTES=30
+TEACHER_TIMEZONE=Europe/Warsaw
+
+# НАСТРОЙКИ БРОНИРОВАНИЯ
+ADVANCE_BOOKING_HOURS=24
+MAX_BOOKING_DAYS_AHEAD=14
+WORKING_DAYS=1,2,3,4,5,6
+
+# GOOGLE CALENDAR (опционально - для полной интеграции)
+# ЗАМЕНИТЕ на ваши реальные credentials из Google Cloud Console:
+GOOGLE_CREDENTIALS={"type":"service_account","project_id":"ваш-проект","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"service-account@ваш-проект.iam.gserviceaccount.com","client_id":"...","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"...","universe_domain":"googleapis.com"}
+
+CALENDAR_ID=primary
+
+=====================================
+НАСТРОЙКИ RENDER:
+=====================================
+
+Name: polish-teacher-bot
+Region: Frankfurt (EU Central)
+Branch: main
+Runtime: Node
+Build Command: npm install
+Start Command: npm start
+
+=====================================
+ВАЖНО! НАСТРОЙКА КАЛЕНДАРЯ:
+=====================================
+
+1. В Google Calendar добавьте Service Account email в календарь:
+   [ваш-service-account]@[ваш-проект].iam.gserviceaccount.com
+
+2. Дайте права "Make changes to events"
+
+3. Если используете не основной календарь, замените CALENDAR_ID 
+   на ваш email календаря (например: anna.kowalska@gmail.com)
+
+=====================================
+БЕЗ КАЛЕНДАРЯ (только основные функции):
+=====================================
+
+Если НЕ хотите настраивать календарь прямо сейчас,
+просто не добавляйте GOOGLE_CREDENTIALS и CALENDAR_ID.
+Бот будет работать в fallback режиме с умной логикой расписания.
+
+=====================================
+ПОЛУЧЕНИЕ РЕАЛЬНЫХ CREDENTIALS:
+=====================================
+
+1. Следуйте инструкции в GOOGLE_CALENDAR_TEACHER_INTEGRATION.md
+2. Скачайте JSON credentials из Google Cloud Console  
+3. Конвертируйте в одну строку (удалите переносы)
+4. Замените шаблон выше на ваши реальные данные

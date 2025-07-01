@@ -1,20 +1,26 @@
 {
   "name": "polish-teacher-bot",
-  "version": "1.0.0",
-  "description": "Telegram бот для записи на уроки польского языка",
-  "main": "polish-teacher-bot.js",
+  "version": "3.0.0",
+  "description": "Telegram бот для записи на уроки польского языка с полной интеграцией Google Calendar",
+  "main": "polish-teacher-bot-calendar.js",
   "scripts": {
-    "start": "node polish-teacher-bot.js",
-    "dev": "nodemon polish-teacher-bot.js",
-    "old-bot": "node bot.js",
+    "start": "node polish-teacher-bot-calendar.js",
+    "dev": "nodemon polish-teacher-bot-calendar.js",
+    "start-improved": "node polish-teacher-bot-improved.js",
+    "start-basic": "node polish-teacher-bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["telegram", "bot", "polish", "teacher", "lessons", "booking"],
+  "keywords": ["telegram", "bot", "polish", "teacher", "lessons", "booking", "google-calendar", "real-time", "api"],
   "author": "Anna Kowalska - Polish Teacher",
   "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "node-telegram-bot-api": "^0.66.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "googleapis": "^132.0.0",
+    "moment-timezone": "^0.5.43"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

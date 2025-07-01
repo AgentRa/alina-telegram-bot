@@ -2,7 +2,13 @@
 node_modules/
 
 # Environment variables
-.env
+.env*
+
+# Google Cloud credentials (important: don't commit secrets!)
+*credentials*.json
+*service-account*.json
+google-cloud-*.json
+polish-teacher-bot-*.json
 
 # IDE files
 .idea/
@@ -27,3 +33,7 @@ coverage/
 # Temporary folders
 tmp/
 temp/
+
+# OS generated files
+.DS_Store
+Thumbs.db
