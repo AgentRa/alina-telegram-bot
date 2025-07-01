@@ -20,7 +20,8 @@
     "node-telegram-bot-api": "^0.66.0",
     "dotenv": "^16.3.1",
     "googleapis": "^132.0.0",
-    "moment-timezone": "^0.5.43"
+    "moment-timezone": "^0.5.43",
+    "nodemailer": "^6.9.13"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

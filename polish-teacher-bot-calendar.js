@@ -2,11 +2,32 @@ const TelegramBot = require('node-telegram-bot-api');
 const { google } = require('googleapis');
 const moment = require('moment-timezone');
 const http = require('http'); // Using built-in http for the server
+const nodemailer = require('nodemailer'); // For sending emails
 require('dotenv').config();
 
 const token = process.env.BOT_TOKEN;
 const port = process.env.PORT || 3000;
 const url = process.env.RENDER_EXTERNAL_URL; // The public URL of the Render service
+
+// Email configuration
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const EMAIL_SERVICE = process.env.EMAIL_SERVICE;
+const TEACHER_EMAIL = process.env.TEACHER_EMAIL || 'anna.kowalska@email.com';
+
+let transporter;
+if (EMAIL_USER && EMAIL_PASS) {
+    transporter = nodemailer.createTransport({
+        service: EMAIL_SERVICE,
+        auth: {
+            user: EMAIL_USER,
+            pass: EMAIL_PASS,
+        },
+    });
+    console.log('✅ Nodemailer транспортер инициализирован');
+} else {
+    console.log('⚠️ Переменные окружения для Email не настроены. Отправка Email будет недоступна.');
+}
 
 let bot;
 
@@ -326,6 +347,49 @@ async function createCalendarEvent(slotTime, lessonType, userInfo) {
         const slotKey = slotTime.format('YYYY-MM-DD_HH:mm');
         localSchedule[slotKey] = { lessonType, userInfo, createdAt: new Date() };
         return { success: true, eventId: slotKey };
+    }
+}
+
+// Отправка email подтверждения
+async function sendConfirmationEmail(bookingDetails) {
+    if (!transporter) {
+        console.log('⚠️ Email не отправлен: Nodemailer транспортер не инициализирован.');
+        return;
+    }
+
+    const { email, lessonType, timeSlot, duration, price, meetLink } = bookingDetails;
+    const selectedLesson = lessonTypes[lessonType];
+    const slotTime = moment(timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
+
+    const meetLinkHtml = meetLink ? `<p><b>Ссылка на Google Meet:</b> <a href="${meetLink}">${meetLink}</a></p>` : '';
+
+    const mailOptions = {
+        from: `"${TEACHER_EMAIL}" <${EMAIL_USER}>`,
+        to: email,
+        subject: `Potwierdzenie rezerwacji lekcji polskiego - ${selectedLesson.name}`,
+        html: `
+            <p>Witaj,</p>
+            <p>Dziękujemy za rezerwację lekcji języka polskiego!</p>
+            <p>Oto szczegóły Twojej rezerwacji:</p>
+            <ul>
+                <li><b>Typ lekcji:</b> ${selectedLesson.name}</li>
+                <li><b>Data i czas:</b> ${slotTime.format('DD.MM.YYYY (dddd) HH:mm')}</li>
+                <li><b>Czas trwania:</b> ${duration} minut</li>
+                <li><b>Koszt:</b> ${price}</li>
+            </ul>
+            ${meetLinkHtml}
+            <p>Link do Zoom zostanie przesłany na Twój email na 24 godziny przed lekcją.</p>
+            <p>W razie pytań, prosimy o kontakt: ${TEACHER_EMAIL}</p>
+            <p>Do zobaczenia na lekcji!</p>
+            <p>Z poważaniem,<br>Anna Kowalska</p>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Email подтверждения отправлен на ${email}`);
+    } catch (error) {
+        console.error(`❌ Ошибка отправки email на ${email}:`, error);
     }
 }
 
@@ -734,6 +798,16 @@ async function confirmBooking(chatId, messageId, userId) {
                 phone: session.phone,
                 bookedAt: new Date(),
                 status: 'confirmed'
+            });
+
+            // Отправляем email подтверждения пользователю
+            await sendConfirmationEmail({
+                email: session.email,
+                lessonType: session.lessonType,
+                timeSlot: session.timeSlot,
+                duration: selectedLesson.duration,
+                price: selectedLesson.price,
+                meetLink: result.meetLink
             });
 
             const meetLinkText = result.meetLink ? `\n🔗 **Link Google Meet:** ${result.meetLink}` : '';
