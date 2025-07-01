@@ -787,28 +787,32 @@ function showBookingConfirmation(chatId, userId) {
     const selectedLesson = lessonTypes[session.lessonType];
     const slotTime = moment(session.timeSlot, 'YYYY-MM-DD_HH:mm').tz(TIMEZONE);
 
+    const escapedName = TelegramBot.escapeMarkdownV2(session.name || '');
+    const escapedEmail = TelegramBot.escapeMarkdownV2(session.email || '');
+    const escapedPhone = TelegramBot.escapeMarkdownV2(session.phone || '');
+
     const message = `
 📋 *Potwierdzenie rezerwacji:*
 
-👤 **Dane kontaktowe:**
-📝 Imię: ${session.name}
-📧 Email: ${session.email}
-📱 Telefon: ${session.phone}
+👤 \*\*Dane kontaktowe:\*\*
+📝 Imię: ${escapedName}
+📧 Email: ${escapedEmail}
+📱 Telefon: ${escapedPhone}
 
-📚 **Lekcja:**
-${selectedLesson.name}
-${selectedLesson.description}
+📚 \*\*Lekcja:\*\*
+${TelegramBot.escapeMarkdownV2(selectedLesson.name)}
+${TelegramBot.escapeMarkdownV2(selectedLesson.description)}
 
-📅 **Termin:**
-${slotTime.format('DD.MM.YYYY (dddd)')}
-🕐 ${slotTime.format('HH:mm')} - ${slotTime.clone().add(selectedLesson.duration, 'minutes').format('HH:mm')}
-⏰ Czas trwania: ${selectedLesson.duration} minut
+📅 \*\*Termin:\*\*
+${TelegramBot.escapeMarkdownV2(slotTime.format('DD.MM.YYYY (dddd)'))}
+🕐 ${TelegramBot.escapeMarkdownV2(slotTime.format('HH:mm'))} - ${TelegramBot.escapeMarkdownV2(slotTime.clone().add(selectedLesson.duration, 'minutes').format('HH:mm'))}
+⏰ Czas trwania: ${TelegramBot.escapeMarkdownV2(selectedLesson.duration.toString())} minut
 
-💰 **Koszt:** ${selectedLesson.price}
+💰 \*\*Koszt:\*\* ${TelegramBot.escapeMarkdownV2(selectedLesson.price)}
 
-🔗 **Link do Zoom zostanie przesłany na email przed lekcją**
-📅 **Wydarzenie zostanie dodane do mojego kalendarza i Twojego**
-📧 **Otrzymasz automatyczne przypomnienia**
+🔗 \*\*Link do Zoom zostanie przesłany na email przed lekcją\*\*
+📅 \*\*Wydarzenie zostanie dodane do mojego kalendarza i Twojego\*\*
+📧 \*\*Otrzymasz automatyczne przypomnienia\*\*
 
 Czy potwierdzasz rezerwację?
 `;
@@ -822,10 +826,15 @@ Czy potwierdzasz rezerwację?
         ]
     };
 
-    bot.sendMessage(chatId, message, {
-        parse_mode: 'Markdown',
-        reply_markup: keyboard
-    });
+    try {
+        bot.sendMessage(chatId, message, {
+            parse_mode: 'MarkdownV2',
+            reply_markup: keyboard
+        });
+    } catch (error) {
+        console.error('❌ Ошибка отправки сообщения подтверждения:', error.message);
+        bot.sendMessage(chatId, 'Произошла ошибка при отображении подтверждения. Пожалуйста, попробуйте снова.');
+    }
 }
 
 // Подтвердить бронирование
